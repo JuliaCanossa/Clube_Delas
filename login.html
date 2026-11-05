@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="auth.css">
+  <title>Clube Delas</title>
+</head>
+
+<body>
+
+  <section class="lado-azul">
+    <span class="logo">Clube Delas</span>
+    <h1>Bom você <span>se torna</span></h1>
+  </section>
+
+  <section class="lado-claro">
+
+    <div class="formulario" id="div_login">
+      <h2>Bem-vinda de volta</h2>
+
+      <input type="email" id="ipt_login_email" placeholder="E-mail">
+      <input type="password" id="ipt_login_senha" placeholder="Senha">
+
+      <button onclick="entrar()">ENTRAR</button>
+      <div id="div_exibir_login"></div>
+
+      <p>Ainda não tem conta? <a href="#" onclick="mostrarCadastro()">Cadastre-se</a></p>
+    </div>
+
+    <div class="formulario" id="div_cadastro" style="display: none;">
+      <h2>Fazer parte</h2>
+
+      <input type="text" id="ipt_cad_nome" placeholder="Nome">
+      <input type="email" id="ipt_cad_email" placeholder="E-mail">
+      <input type="password" id="ipt_cad_senha" placeholder="Senha">
+      <input type="password" id="ipt_cad_confirmar" placeholder="Confirmar senha">
+
+      <button onclick="cadastrar()">CRIAR CONTA</button>
+      <div id="div_exibir"></div>
+
+      <p>Já tem conta? <a href="#" onclick="mostrarLogin()">Entrar</a></p>
+    </div>
+
+  </section>
+
+  <script>
+    let nomes = [];
+    let emails = [];
+    let senhas = [];
+
+    function mostrarCadastro() {
+      div_login.style.display = "none";
+      div_cadastro.style.display = "block";
+      div_exibir.innerHTML = "";
+    }
+
+    function mostrarLogin() {
+      div_cadastro.style.display = "none";
+      div_login.style.display = "block";
+      div_exibir_login.innerHTML = "";
+    }
+
+    function cadastrar() {
+      let nome = ipt_cad_nome.value;
+      let email = ipt_cad_email.value;
+      let senha = ipt_cad_senha.value;
+      let confirmar = ipt_cad_confirmar.value;
+
+      if (nome == "" || email == "" || senha == "" || confirmar == "") {
+        div_exibir.innerHTML = "Preencha todos os campos";
+      } else if (senha != confirmar) {
+        div_exibir.innerHTML = "As senhas não são iguais";
+      } else if (emails.indexOf(email) != -1) {
+        div_exibir.innerHTML = "Esse e-mail já está cadastrado";
+      } else {
+        nomes.push(nome);
+        emails.push(email);
+        senhas.push(senha);
+
+        mostrarLogin();
+        div_exibir_login.innerHTML = "Conta criada! Agora é só entrar.";
+      }
+    }
+
+    function entrar() {
+      let email = ipt_login_email.value;
+      let senha = ipt_login_senha.value;
+
+      div_exibir_login.innerHTML = "E-mail ou senha incorretos";
+
+      // for procura o e-mail e a senha nos vetores
+      for (let i = 0; i < emails.length; i++) {
+        if (emails[i] == email && senhas[i] == senha) {
+          div_exibir_login.innerHTML = "Bem-vinda, " + nomes[i] + "!";
+        }
+      }
+    }
+  </script>
+
+</body>
+
+</html>

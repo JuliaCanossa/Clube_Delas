@@ -70,7 +70,7 @@ nav a {
 }
 
 .inicio img {
-    width: 300px;
+    width: 250px;
 }
 
 /* FAIXA INFERIOR */
@@ -84,51 +84,94 @@ nav a {
     font-size: 12px;
 }
 
-/*Julia */
+/* JULIA */
 
-.julia{
-background-color: #e0eced;
-padding: 60px 240px;
-max-width: 700px;
+.julia {
+    background-color: #e0eced;
+    padding: 60px 240px;
+    max-width: 700px;
 
-h1{
-font-size: 48px;
+    h1 {
+        font-size: 48px;
+    }
+
+    p {
+        font-size: 18px;
+        line-height: 1.6;
+    }
+
+    blockquote {
+        border-left: 5px solid #e8c88a;
+        padding-left: 30px;
+        font-style: italic;
+        font-size: 26px;
+        margin-left: 0;
+    }
 }
 
-p {
-    font-size: 18px;
-    line-height: 1.6;
-  }
+/* DICAS */
 
-  blockquote {
-    border-left: 5px solid #e8c88a;
-    padding-left: 30px;
-    font-style: italic;
-    font-size: 26px;
-    margin-left: 0;
-  }
+.dicas {
+    background-color: #1800ad;
+    color: white;
+    padding: 60px 100px;
+
+    h2 {
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-size: 48px;
+    }
+}
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
 }
 
 .card {
-  border: 1px solid #d2dfe0;
-  background-color: #1800ad;
-  padding: 30px;
+    border: 1px solid #d2dfe0;
+    padding: 30px;
+    width: 25%;
 
-  h3 {
-    font-family: "Playfair Display", serif;
-    font-style: italic;
-    font-size: 30px;
-    color: #e8c88a;
-  }
+    h3 {
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-size: 30px;
+        color: #e8c88a;
+    }
 
-  p {
-    font-size: 18px;
-    line-height: 1.6;
-    color: #d2dfe0;
-  }
+    p {
+        font-size: 18px;
+        line-height: 1.6;
+        color: #d2dfe0;
+    }
 
-  .dica {
-    font-size: 14px;
-    margin-bottom: 12px;
-  }
+    .dica {
+        font-size: 14px;
+        margin-bottom: 12px;
+        color: white;
+    }
+}
+
+/* PARTE FINAL */
+
+.chamada {
+    background-color: #e0eced;
+    color: #1800ad;
+    text-align: center;
+    padding: 80px 20px;
+
+    h2 {
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-size: 48px;
+        margin-bottom: 10px;
+    }
+
+    p {
+        font-size: 16px;
+        color: #555;
+        margin-bottom: 30px;
+    }
 }
