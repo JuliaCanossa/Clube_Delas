@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard simples</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <h2>Dashboard</h2>
+
+    <div style="width: 500px; height: 300px;">
+        <canvas id="graficobarra"></canvas>
+    </div>
+
+    <div id="div_exibir"></div>
+
+    <h2>Checklist</h2>
+
+    <input type="text" id="campo" placeholder="Digite uma tarefa">
+    <button onclick="adicionar()">Adicionar</button>
+
+    <br><br>
+
+    <div id="lista"></div>
+
+    <script>
+        let tarefas = [];
+        let feitas = [];
+
+        let grafico = new Chart(graficobarra, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Concluída (1 = sim, 0 = não)',
+                    data: [],
+                    backgroundColor: '#4e79a7'
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                maintainAspectRatio: false,
+                scales: { x: { min: 0, max: 1, ticks: { stepSize: 1 } } }
+            }
+        });
+
+        function adicionar() {
+            if (campo.value != '') {
+                tarefas.push(campo.value);
+                feitas.push(false);
+                campo.value = '';
+                atualizar();
+            }
+        }
+
+        function marcar(i) {
+            if (feitas[i]) {
+                feitas[i] = false;
+            } else {
+                feitas[i] = true;
+            }
+            atualizar();
+        }
+
+        function atualizar() {
+            let conteudo = '';
+            let valores = [];
+            let total = 0;
+
+            for (let i = 0; i < tarefas.length; i++) {
+                let marcado = '';
+                let valor = 0;
+
+                if (feitas[i]) {
+                    marcado = 'checked';
+                    valor = 1;
+                    total = total + 1;
+                }
+
+                valores.push(valor);
+
+                conteudo = conteudo + `<div><input type="checkbox" ${marcado} onchange="marcar(${i})"> ${tarefas[i]}</div>`;
+            }
+
+            lista.innerHTML = conteudo;
+            div_exibir.innerHTML = `Tarefas feitas: ${total} de ${tarefas.length}`;
+
+            grafico.data.labels = tarefas;
+            grafico.data.datasets[0].data = valores;
+            grafico.update();
+        }
+
+        atualizar();
+    </script>
+</body>
+</html>
