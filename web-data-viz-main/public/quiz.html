@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Você já começou algo e não terminou?</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/quiz.css">
+</head>
+<body>
+
+<div class="container">
+
+  <h1 class="h1">Você já começou algo e não terminou?</h1>
+  <p style="color: #e8d39d; font-size: 25px;">✦ Responda as 5 perguntas para entrar no clube:</p>
+
+  <div class="perguntas">
+
+    <p>1. Você começou um curso online. O que acontece?</p>
+    <div class="select">
+    <select id="q1">
+      <option value="">Escolha uma opção</option>
+      <option value="a">Deixo para estudar amanhã.</option>
+      <option value="b">Fico refazendo as anotações até ficarem perfeitas.</option>
+      <option value="c">Aparece outro curso mais legal e eu troco.</option>
+      <option value="d">Estudo um pouco por dia até terminar.</option>
+    </select>
+
+    <p>2. Você tem um trabalho para entregar na sexta. Quando começa?</p>
+    <select id="q2">
+      <option value="">Escolha uma opção</option>
+      <option value="a">Na quinta à noite.</option>
+      <option value="b">Cedo, mas demoro para dar por finalizado.</option>
+      <option value="c">Começo, mas me distraio com outras coisas.</option>
+      <option value="d">Na segunda-feira, e entrego antes do prazo.</option>
+    </select>
+
+    <p>3. Por que você largou o último projeto?</p>
+    <select id="q3">
+      <option value="">Escolha uma opção</option>
+      <option value="a">Fui adiando até perder a vontade.</option>
+      <option value="b">Achei que não estava bom o bastante.</option>
+      <option value="c">Tive uma ideia nova e fui atrás dela.</option>
+      <option value="d">Eu não larguei, eu terminei.</option>
+    </select>
+
+    <p>4. Como está a sua lista de tarefas?</p>
+    <select id="q4">
+      <option value="">Escolha uma opção</option>
+      <option value="a">Cheia de coisas para "fazer depois".</option>
+      <option value="b">Tenho poucas tarefas, mas demoro em cada uma.</option>
+      <option value="c">Tenho várias listas começadas.</option>
+      <option value="d">Quase tudo riscado.</option>
+    </select>
+
+    <p>5. Quando algo fica difícil, você...</p>
+    <select id="q5">
+      <option value="">Escolha uma opção</option>
+      <option value="a">Fico enrolando e deixo para outro dia.</option>
+      <option value="b">Travo, com medo de errar.</option>
+      <option value="c">Mudo para outra coisa mais fácil.</option>
+      <option value="d">Insisto até conseguir.</option>
+    </select>
+
+  </div></div>
+
+  <button onclick="verResultado()">Ver Resultado</button>
+
+  <div id="div_exibir"></div>
+
+</div>
+
+<script>
+  function verResultado() {
+    if (q1.value == "" || q2.value == "" || q3.value == "" || q4.value == "" || q5.value == "") {
+     alert ("Responda todas as perguntas.");
+    } else {
+      div_exibir.innerHTML = "Vem pro Clube Delas";
+    }
+  }
+</script>
+
+</body>
+</html>

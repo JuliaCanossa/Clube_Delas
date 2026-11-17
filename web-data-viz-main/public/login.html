@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/auth.css">
+    <title>Clube Delas | Login</title>
+</head>
+
+<body>
+
+    <section class="lado-azul">
+        <span class="logo">Clube Delas</span>
+        <h1>Um espaço para <span>ser você</span></h1>
+        <p>
+            Pequenos hábitos, novas experiências e uma comunidade
+            de meninas que querem crescer juntas
+        </p>
+    </section>
+
+    <section class="lado-claro">
+
+        <div class="formulario">
+            <h2>Bem-vinda de volta!</h2>
+            <p class="subtitulo">Entre na sua conta para continuar.</p>
+
+            <input type="email" id="ipt_login_email" placeholder="E-mail">
+            <input type="password" id="ipt_login_senha" placeholder="Senha">
+
+            <button onclick="entrar()">ENTRAR</button>
+
+            <div id="div_exibir_login"></div>
+
+            <p>
+                Ainda não tem conta?
+                <a href="cadastro.html">Cadastre-se</a>
+            </p>
+        </div>
+
+    </section>
+
+    <script src="js/login.js"></script>
+
+</body>
+</html>
+<script>
+  // ===== FUNÇÃO DO BOTÃO "ENTRAR" =====
+function entrar() {
+
+    // Pega o que a pessoa digitou nos campos (os ids são os do HTML do login)
+    let emailVar = ipt_login_email.value;
+    let senhaVar = ipt_login_senha.value;
+
+    // 1) Validação: se algum campo estiver vazio, avisa e para por aqui
+    if (emailVar == "" || senhaVar == "") {
+        div_exibir_login.innerHTML = "Preencha todos os campos";
+
+    } else {
+
+        // 2) Envia e-mail e senha para o servidor (rota de autenticação)
+        fetch("/usuarios/autenticar", {
+            method: "POST",                                  // POST = enviando dados
+            headers: {
+                "Content-Type": "application/json"           // avisa que os dados estão em JSON
+            },
+            body: JSON.stringify({
+                emailServer: emailVar,                       // nomes que o servidor espera receber
+                senhaServer: senhaVar
+            })
+        }).then(function (resposta) {
+
+            // 3) Se o servidor respondeu "ok", o login deu certo
+            if (resposta.ok) {
+                resposta.json().then(function (json) {
+
+                    // Guarda os dados da usuária na sessão (some quando fecha a aba)
+                    sessionStorage.EMAIL_USUARIO = json.email;
+                    sessionStorage.NOME_USUARIO = json.nome;
+                    sessionStorage.ID_USUARIO = json.id;
+
+                    div_exibir_login.innerHTML = "Bem-vinda, " + json.nome + "!";
+                    // Espera 1 segundo e vai para o dashboard
+                    setTimeout(function () {
+                        window.location = "dashboard/dashboard.html";
+                    }, 1000);
+                });
+                
+            } else {
+                // Servidor respondeu, mas e-mail ou senha estão errados
+                div_exibir_login.innerHTML = "E-mail ou senha incorretos";
+            }
+
+        }).catch(function (erro) {
+            // Não conseguiu nem falar com o servidor
+            console.log("#ERRO: ", erro);
+            div_exibir_login.innerHTML = "Erro de conexão com o servidor.";
+        });
+    }
+}
+</script>

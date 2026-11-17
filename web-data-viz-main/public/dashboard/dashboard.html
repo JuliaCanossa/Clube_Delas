@@ -1,0 +1,159 @@
+    <script>
+
+        // ===== BLOQUEIA ACESSO SEM LOGIN =====
+        if (sessionStorage.ID_USUARIO == undefined) {
+            window.location = "login.html";
+        }
+
+        // Mostra o nome da usuária no "Olá, ..."
+        b_usuario.innerHTML = sessionStorage.NOME_USUARIO;
+
+        let diasSemana = [
+            "Segunda",
+            "Terça",
+            "Quarta",
+            "Quinta",
+            "Sexta",
+            "Sábado",
+            "Domingo"
+        ];
+
+        // ===== GRÁFICO DE BARRAS (começa vazio) =====
+        const graficoEvolucao = new Chart(
+            document.getElementById("grafico_evolucao"),
+            {
+                type: "bar",
+
+                data: {
+                    labels: diasSemana,
+
+                    datasets: [{
+                        label: "Checks realizados",
+                        data: [],
+                        backgroundColor: "#78936d",
+                        borderRadius: 6
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            }
+        );
+
+        // ===== GRÁFICO DE PIZZA (começa vazio) =====
+        const graficoAtencao = new Chart(
+            document.getElementById("grafico_atencao"),
+            {
+                type: "pie",
+
+                data: {
+                    labels: [],
+
+                    datasets: [{
+                        data: [],
+
+                        backgroundColor: [
+                            "#78936d",
+                            "#d5a15e",
+                            "#a9b99f",
+                            "#b77d72",
+                            "#c5cbbd"
+                        ]
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+
+                    plugins: {
+                        legend: {
+                            position: "bottom"
+                        }
+                    }
+                }
+            }
+        );
+
+        // ===== BUSCA OS DADOS NA API E PREENCHE A DASHBOARD =====
+        function carregarDashboard() {
+
+            fetch("/habitos/dashboard/" + sessionStorage.ID_USUARIO)
+                .then(function (resposta) {
+
+                    if (resposta.ok) {
+
+                        resposta.json().then(function (dados) {
+
+                            let habitos = dados.habitos;
+                            let checksPorDia = dados.checksPorDia;
+
+                            // KPI 1: TOTAL DE HÁBITOS CONCLUÍDOS
+                            let totalConcluidos = 0;
+
+                            for (let i = 0; i < habitos.length; i++) {
+                                totalConcluidos += habitos[i].checks;
+                            }
+
+                            // KPI 2: DIAS DE CONSTÂNCIA
+                            let diasConstancia = 0;
+
+                            for (let i = 0; i < checksPorDia.length; i++) {
+                                if (checksPorDia[i] > 0) {
+                                    diasConstancia++;
+                                }
+                            }
+
+                            // KPI 3: HÁBITOS EM ATENÇÃO
+                            let habitosAtencao = [];
+
+                            for (let i = 0; i < habitos.length; i++) {
+                                if (habitos[i].checks == 0) {
+                                    habitosAtencao.push(habitos[i].nome);
+                                }
+                            }
+
+                            // EXIBINDO OS KPIs
+                            document.getElementById("kpi_concluidos").innerHTML = totalConcluidos;
+                            document.getElementById("kpi_dias").innerHTML = diasConstancia + "/7";
+                            document.getElementById("kpi_atencao").innerHTML = habitosAtencao.length;
+
+                            // ATUALIZANDO OS GRÁFICOS
+                            graficoEvolucao.data.datasets[0].data = checksPorDia;
+                            graficoEvolucao.update();
+
+                            graficoAtencao.data.labels = habitosAtencao;
+                            graficoAtencao.data.datasets[0].data = habitosAtencao.map(() => 1);
+                            graficoAtencao.update();
+                        });
+
+                    } else {
+                        console.log("Erro ao buscar dados da dashboard.");
+                    }
+
+                })
+                .catch(function (erro) {
+                    console.log("#ERRO:", erro);
+                });
+        }
+
+        // ===== SAIR: apaga a sessão e volta para o login =====
+        function sair() {
+            sessionStorage.clear();
+            window.location = "login.html";
+        }
+
+        carregarDashboard();
+
+    </script>

@@ -1,0 +1,81 @@
+body {
+    background-color: #d2dfe0;
+    color: #13066b;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 0 20px 50px;
+}
+
+/* ===== MENU ===== */
+.menu {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    margin: 0 -20px 40px;
+    border-bottom: 1px solid #13066b;
+}
+
+.menu-logo {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 22px;
+}
+
+.menu-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.menu-links a {
+    color: #13066b;
+    text-decoration: none;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.menu-links a:hover {
+    text-decoration: underline;
+}
+
+.menu-links .menu-sair {
+    background-color: #13066b;
+    color: #d2dfe0;
+    padding: 10px 16px;
+}
+
+/* ===== PÁGINA ===== */
+.titulo {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 40px;
+}
+
+.campo {
+    padding: 12px;
+    border: 1px solid #13066b;
+    background-color: transparent;
+    color: #13066b;
+}
+
+.botao {
+    padding: 12px 18px;
+    border: none;
+    background-color: #13066b;
+    color: #d2dfe0;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.botao:hover {
+    background-color: #e8c88a;
+    color: #13066b;
+}
+
+.lista {
+    margin-top: 30px;
+    font-size: 22px;
+    line-height: 2;
+}

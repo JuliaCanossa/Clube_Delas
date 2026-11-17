@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/dashboards.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+    <title>Clube Delas | Dashboard</title>
+</head>
+
+<body>
+
+    <header class="menu">
+        <span class="menu-logo">Clube Delas</span>
+
+      <nav class="menu-links">
+            <a href="simulador.html">To Do List</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="index.html" class="menu-sair">Sair</a>
+            
+        </nav>
+    </header>
+
+    <main class="dashboard">
+
+        <h1 class="titulo">Evolução da semana</h1>
+
+        <section class="kpis">
+
+            <div class="kpi">
+                <span class="kpi-titulo">Hábitos concluídos</span>
+                <span class="kpi-valor" id="kpi_concluidos">0</span>
+                <span class="kpi-legenda">esta semana</span>
+            </div>
+
+            <div class="kpi">
+                <span class="kpi-titulo">Dias de constância</span>
+                <span class="kpi-valor" id="kpi_dias">0</span>
+                <span class="kpi-legenda">dias consecutivos</span>
+            </div>
+
+            <div class="kpi">
+                <span class="kpi-titulo">Hábitos em atenção</span>
+                <span class="kpi-valor" id="kpi_atencao">0</span>
+                <span class="kpi-legenda">receberam menos check</span>
+            </div>
+
+        </section>
+
+        <section class="graficos">
+
+            <div class="caixa">
+                <h2>Evolução dos hábitos</h2>
+                <p class="caixa-sub">Hábitos concluídos por dia</p>
+                <div class="area-grafico">
+                    <canvas id="grafico_evolucao"></canvas>
+                </div>
+            </div>
+
+            <div class="caixa">
+                <h2>Hábitos em atenção</h2>
+                <p class="caixa-sub">Hábitos com menos checks</p>
+                <div class="area-grafico">
+                    <canvas id="grafico_atencao"></canvas>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // ===== DADOS DE EXEMPLO (depois vão vir do banco) =====
+        let habitos = [
+            { nome: "Beber água", checks: 7 },
+            { nome: "Ler 10 minutos", checks: 4 },
+            { nome: "Exercício", checks: 3 },
+            { nome: "Dormir cedo", checks: 1 },
+            { nome: "Meditar", checks: 0 }
+        ];
+
+        let checksPorDia = [3, 2, 4, 3, 3, 0, 0]; // Seg a Dom
+
+        let diasSemana = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
+
+        // Hábito com esse número de checks ou menos entra em "atenção"
+        let LIMITE_ATENCAO = 1;
+
+        // ===== CRIAÇÃO DOS GRÁFICOS =====
+        let graficoEvolucao = new Chart(document.getElementById("grafico_evolucao"), {
+            type: "bar",
+            data: {
+                labels: diasSemana,
+                datasets: [{
+                    label: "Hábitos concluídos",
+                    data: [],
+                    backgroundColor: "#2f5bea",
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                }
+            }
+        });
+
+        let graficoAtencao = new Chart(document.getElementById("grafico_atencao"), {
+            type: "pie",
+            data: {
+                labels: [],
+                datasets: [{
+                    data: [],
+                    backgroundColor: ["#2f5bea", "#7aa2ff", "#b8cdfc", "#f4a6c0", "#f7c873"]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: "bottom" } }
+            }
+        });
+
+        // ===== FUNÇÃO QUE PREENCHE A DASH =====
+        function atualizarDashboard(habitos, checksPorDia) {
+
+            // 1) Total de hábitos concluídos na semana
+            let totalConcluidos = 0;
+            for (let i = 0; i < checksPorDia.length; i++) {
+                totalConcluidos += checksPorDia[i];
+            }
+
+            // 2) Maior sequência de dias seguidos com pelo menos 1 check
+            let diasConsecutivos = 0;
+            let sequenciaAtual = 0;
+            for (let i = 0; i < checksPorDia.length; i++) {
+                if (checksPorDia[i] > 0) {
+                    sequenciaAtual++;
+                    if (sequenciaAtual > diasConsecutivos) {
+                        diasConsecutivos = sequenciaAtual;
+                    }
+                } else {
+                    sequenciaAtual = 0;
+                }
+            }
+
+            // 3) Hábitos em atenção
+            let habitosAtencao = [];
+            for (let i = 0; i < habitos.length; i++) {
+                if (habitos[i].checks <= LIMITE_ATENCAO) {
+                    habitosAtencao.push(habitos[i].nome);
+                }
+            }
+
+            // Escreve nos cards
+            document.getElementById("kpi_concluidos").innerHTML = totalConcluidos;
+            document.getElementById("kpi_dias").innerHTML = diasConsecutivos;
+            document.getElementById("kpi_atencao").innerHTML = habitosAtencao.length;
+
+            // Atualiza os gráficos
+            graficoEvolucao.data.datasets[0].data = checksPorDia;
+            graficoEvolucao.update();
+
+            graficoAtencao.data.labels = habitosAtencao;
+            graficoAtencao.data.datasets[0].data = habitosAtencao.map(() => 1);
+            graficoAtencao.update();
+        }
+
+        atualizarDashboard(habitos, checksPorDia);
+    </script>
+
+</body>
+
+</html>
