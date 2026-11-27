@@ -26,7 +26,7 @@ O projeto busca estimular a autonomia, o autoconhecimento e a construção de um
 - CSS3
 - JavaScript
 - Node.js
-- Express
+- API - WEB - DATA - VIZ
 - MySQL
 - Chart.js
 
@@ -36,7 +36,7 @@ O projeto é dividido em duas partes principais:
 
 **Front-end:** responsável pela interface e interação com a usuária, desenvolvido com HTML, CSS e JavaScript.
 
-**Back-end:** responsável pelo processamento das informações, comunicação com o banco de dados e disponibilização dos dados por meio de uma API desenvolvida com Node.js e Express.
+**Back-end:** responsável pelo processamento das informações, comunicação com o banco de dados e disponibilização dos dados por meio de uma API desenvolvida com Node.js.
 
 **Banco de Dados:** MySQL, utilizado para armazenar as informações das usuárias e seus hábitos.
 
