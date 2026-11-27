@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/check.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+    <title>Checklist</title>
+</head>
+<body>
+
+    <header class="navbar">
+        <h1>Clube Delas</h1>
+
+        <nav>
+            <a href="simulador.html" class="ativa">To Do List</a>
+            <a href="dashboard.html">Dashboard</a>
+        </nav>
+
+        <div class="navbar-direita">
+            <span class="usuario">✦ Olá, <b id="nome_usuario">Visitante</b></span>
+            <a href="index.html" class="botao-sair" onclick="sair()">Sair</a>
+        </div>
+    </header>
+
+    <h1 class="titulo">Checklist</h1>
+
+    <div class="conteudo-checklist">
+
+        <input type="text" id="ipt_habito" class="campo" placeholder="Digite um hábito" maxlength="100">
+
+        <button onclick="adicionar()" class="botao">Adicionar hábito</button>
+
+        <div id="div_exibir" class="lista"></div>
+
+    </div>
+
+    <script>
+        // ===== USUÁRIA =====
+        let idUsuario = localStorage.getItem("idUsuario");
+        let nomeUsuario = localStorage.getItem("nomeUsuario");
+
+        // sem login, volta para a tela de login
+        if (!idUsuario) {
+            window.location = "login.html";
+        }
+
+        if (nomeUsuario) {
+            nome_usuario.innerHTML = nomeUsuario;
+        }
+
+        function sair() {
+            localStorage.removeItem("idUsuario");
+            localStorage.removeItem("nomeUsuario");
+        }
+
+        // ===== CHECKLIST =====
+        // cada item: { id: id_usuario_habito, nome: "...", feito: true/false }
+        let lista = [];
+
+        // evita que um nome com < ou > quebre a página
+        function limpar(texto) {
+            return String(texto)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;");
+        }
+
+        // busca no banco os hábitos da usuária e se já foram marcados hoje
+        function carregar() {
+            fetch("/usuarios/habitos/listar/" + idUsuario)
+                .then(function (resposta) {
+                    if (!resposta.ok) {
+                        throw new Error("Erro " + resposta.status);
+                    }
+                    return resposta.json();
+                })
+                .then(function (habitos) {
+                    lista = [];
+                    let nomes = lerNomes();
+
+                    for (let i = 0; i < habitos.length; i++) {
+                        lista.push({
+                            id: habitos[i].id_usuario_habito,
+                            nome: nomes[habitos[i].id_usuario_habito] || habitos[i].nome,
+                            feito: Number(habitos[i].feitoHoje) > 0
+                        });
+                    }
+
+                    exibir();
+                })
+                .catch(function (erro) {
+                    console.log("#ERRO ao carregar:", erro);
+                    div_exibir.innerHTML = "Não foi possível carregar seus hábitos.";
+                });
+        }
+
+        function adicionar() {
+            let habito = ipt_habito.value.trim();
+
+            if (habito == "") {
+                alert("Digite um hábito!");
+                return;
+            }
+
+            fetch("/usuarios/habitos/criar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    nomeServer: habito,
+                    idUsuarioServer: idUsuario
+                })
+            }).then(function (resposta) {
+                if (resposta.ok) {
+                    ipt_habito.value = "";
+                    carregar();
+                } else {
+                    alert("Não foi possível adicionar o hábito.");
+                }
+            }).catch(function (erro) {
+                console.log("#ERRO ao adicionar:", erro);
+                alert("Erro de conexão com o servidor.");
+            });
+        }
+
+        function marcar(i) {
+            let acao = lista[i].feito ? "desmarcar" : "marcar";
+
+            fetch("/usuarios/habitos/" + acao + "/" + lista[i].id, {
+                method: "POST"
+            }).then(function (resposta) {
+                if (resposta.ok) {
+                    lista[i].feito = !lista[i].feito;
+                } else {
+                    alert("Erro ao " + acao + ": status " + resposta.status);
+                }
+                exibir();
+            }).catch(function (erro) {
+                console.log("#ERRO ao " + acao + ":", erro);
+                alert("Erro de conexão.");
+                exibir();
+            });
+        }
+
+        // ===== NOMES EDITADOS (só no navegador, sem back) =====
+        function chaveNomes() {
+            return "nomes_" + idUsuario;
+        }
+
+        function lerNomes() {
+            try {
+                return JSON.parse(localStorage.getItem(chaveNomes())) || {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        // corrige o nome do hábito pelo prompt
+        function editar(i) {
+            let novoNome = prompt("Corrija o nome do hábito:", lista[i].nome);
+
+            if (novoNome === null) {
+                return;
+            }
+
+            novoNome = novoNome.trim();
+
+            if (novoNome == "") {
+                alert("Digite um nome para o hábito!");
+                return;
+            }
+
+            let nomes = lerNomes();
+            nomes[lista[i].id] = novoNome;
+
+            try {
+                localStorage.setItem(chaveNomes(), JSON.stringify(nomes));
+            } catch (e) { }
+
+            lista[i].nome = novoNome;
+            exibir();
+        }
+
+        function exibir() {
+            div_exibir.innerHTML = "";
+
+            if (lista.length == 0) {
+                div_exibir.innerHTML = "Digite o seu hábito, Borá se cuidarLeo9876**!";
+                return;
+            }
+
+            for (let i = 0; i < lista.length; i++) {
+                let marcado = lista[i].feito ? "checked" : "";
+                let classe = lista[i].feito ? "feito" : "";
+
+                div_exibir.innerHTML +=
+                    `<label class="${classe}"><input type="checkbox" ${marcado} onchange="marcar(${i})"> ${limpar(lista[i].nome)}</label>` +
+                    `<button onclick="editar(${i})" title="Editar hábito" style="border:none;background:none;cursor:pointer;color:#13066b;font-size:16px;">✎</button>` +
+                    `<br>`;
+            }
+        }
+
+        if (idUsuario) {
+            carregar();
+        }
+    </script>
+
+</body>
+</html>

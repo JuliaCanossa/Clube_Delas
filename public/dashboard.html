@@ -1,0 +1,327 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/dashboards.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+    <title>Clube Delas | Dashboard</title>
+</head>
+
+<body>
+
+    <header class="navbar">
+        <h1>Clube Delas</h1>
+
+        <nav>
+            <a href="simulador.html">To Do List</a>
+            <a href="dashboard.html" class="ativa">Dashboard</a>
+        </nav>
+
+        <div class="navbar-direita">
+            <span class="usuario">✦ Olá, <b id="nome_usuario">Visitante</b></span>
+            <a href="index.html" class="botao" onclick="sair()">Sair</a>
+        </div>
+    </header>
+
+    <main class="dashboard">
+
+        <h1 class="titulo">Evolução da semana</h1>
+
+        <section class="kpis">
+            <div class="kpi">
+                <span class="kpi-titulo">Progresso dos Hábitos</span>
+                <span class="kpi-valor" id="kpi_concluidos">0%</span>
+                <span class="kpi-legenda">dos checks possíveis até hoje</span>
+            </div>
+
+            <div class="kpi">
+                <span class="kpi-titulo">Dias de constância</span>
+                <span class="kpi-valor" id="kpi_dias">0</span>
+                <span class="kpi-legenda">dias seguidos com check</span>
+            </div>
+
+            <div class="kpi">
+                <span class="kpi-titulo">Hábitos em atenção</span>
+                <span class="kpi-valor" id="kpi_atencao">0</span>
+                <span class="kpi-legenda">precisam de mais checks</span>
+            </div>
+        </section>
+
+        <section class="graficos">
+            <div class="caixa">
+                <h2>Checks por dia</h2>
+                <p class="caixa-sub">Quantos hábitos você concluiu em cada dia</p>
+                <div class="area-grafico">
+                    <canvas id="grafico_evolucao"></canvas>
+                </div>
+            </div>
+
+            <div class="caixa">
+                <h2>Checks por hábito</h2>
+                <p class="caixa-sub">Dourado = hábito em atenção</p>
+                <div class="area-grafico">
+                    <canvas id="grafico_atencao"></canvas>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+
+// USUÁRIA
+let idUsuario = localStorage.getItem("idUsuario");
+let nomeUsuario = localStorage.getItem("nomeUsuario");
+
+if (!idUsuario) {
+    window.location = "login.html";
+}
+
+if (nomeUsuario) {
+    document.getElementById("nome_usuario").textContent = nomeUsuario;
+}
+
+function sair() {
+    localStorage.removeItem("idUsuario");
+    localStorage.removeItem("nomeUsuario");
+}
+
+
+// CONFIGURAÇÕES
+let diasSemana = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
+
+let hoje = (new Date().getDay() + 6) % 7;
+let diasPassados = hoje + 1;
+
+let COR_PRINCIPAL = "#13066b";
+let COR_ATENCAO = "#e2be74";
+let COR_FUTURO = "#d6d1f0";
+
+
+// ELEMENTOS DO HTML
+let kpiConcluidos = document.getElementById("kpi_concluidos");
+let kpiDias = document.getElementById("kpi_dias");
+let kpiAtencao = document.getElementById("kpi_atencao");
+
+
+// GRÁFICO DE EVOLUÇÃO
+let graficoEvolucao = new Chart(document.getElementById("grafico_evolucao"), {
+    type: "bar",
+    data: {
+        labels: diasSemana,
+        datasets: [{
+            label: "Hábitos concluídos",
+            data: [],
+            backgroundColor: [],
+            borderRadius: 8
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+    }
+});
+
+
+// GRÁFICO DE HÁBITOS
+let graficoHabitos = new Chart(document.getElementById("grafico_atencao"), {
+    type: "bar",
+    data: {
+        labels: [],
+        datasets: [{
+            label: "Checks na semana",
+            data: [],
+            backgroundColor: [],
+            borderRadius: 8
+        }]
+    },
+    options: {
+        indexAxis: "y",
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } }
+    }
+});
+
+
+// BUSCA OS DADOS NA API
+function buscar(url) {
+    return fetch(url, { cache: "no-store" })
+        .then(function (resposta) {
+            if (!resposta.ok) {
+                throw new Error("Erro ao buscar os dados");
+            }
+
+            return resposta.json();
+        });
+}
+
+
+// CARREGA O DASHBOARD
+function carregarDashboard() {
+
+    Promise.all([
+        buscar("/usuarios/dashboard/habitos/" + idUsuario),
+        buscar("/usuarios/dashboard/dias/" + idUsuario)
+    ])
+    .then(function (resultado) {
+
+        let habitos = resultado[0];
+        let linhasDias = resultado[1];
+
+        let checksPorDia = [0, 0, 0, 0, 0, 0, 0];
+
+        for (let i = 0; i < linhasDias.length; i++) {
+            checksPorDia[Number(linhasDias[i].dia)] = Number(linhasDias[i].total);
+        }
+
+        atualizarDashboard(habitos, checksPorDia);
+
+    })
+    .catch(function (erro) {
+        console.log("#ERRO dashboard:", erro);
+    });
+}
+
+
+// ATUALIZA O DASHBOARD
+function atualizarDashboard(habitos, checksPorDia) {
+
+    // SOMA DOS CHECKS
+    let totalChecks = 0;
+
+    for (let i = 0; i <= hoje; i++) {
+        totalChecks = totalChecks + checksPorDia[i];
+    }
+
+
+    // PORCENTAGEM DOS HÁBITOS
+    let totalPossivel = habitos.length * diasPassados;
+    let porcentagem = 0;
+
+    if (totalPossivel > 0) {
+        porcentagem = (totalChecks / totalPossivel) * 100;
+    }
+
+    if (porcentagem > 100) {
+        porcentagem = 100;
+    }
+
+
+    // DIAS DE CONSTÂNCIA
+    let sequencia = 0;
+    let inicio = hoje;
+
+    if (checksPorDia[hoje] == 0) {
+        inicio = hoje - 1;
+    }
+
+    for (let i = inicio; i >= 0 && checksPorDia[i] > 0; i--) {
+        sequencia++;
+    }
+
+
+    // HÁBITOS EM ATENÇÃO
+    let limiteAtencao = Math.ceil(diasPassados / 2);
+
+    let listaHabitos = habitos.slice();
+
+    listaHabitos.sort(function (a, b) {
+        return Number(b.checks) - Number(a.checks);
+    });
+
+    let emAtencao = 0;
+
+    for (let i = 0; i < listaHabitos.length; i++) {
+        if (Number(listaHabitos[i].checks) < limiteAtencao) {
+            emAtencao++;
+        }
+    }
+
+
+    // MOSTRA OS RESULTADOS
+    kpiConcluidos.textContent = porcentagem.toFixed(0) + "%";
+    kpiDias.textContent = sequencia;
+    kpiAtencao.textContent = emAtencao;
+
+
+    // GRÁFICO DE EVOLUÇÃO
+    let nomesDias = [];
+    let coresDias = [];
+
+    for (let i = 0; i < 7; i++) {
+
+        if (i == hoje) {
+            nomesDias.push(diasSemana[i] + " (hoje)");
+        } else {
+            nomesDias.push(diasSemana[i]);
+        }
+
+        if (i > hoje) {
+            coresDias.push(COR_FUTURO);
+        } else {
+            coresDias.push(COR_PRINCIPAL);
+        }
+    }
+
+    graficoEvolucao.data.labels = nomesDias;
+    graficoEvolucao.data.datasets[0].data = checksPorDia;
+    graficoEvolucao.data.datasets[0].backgroundColor = coresDias;
+
+    graficoEvolucao.update();
+
+
+    // GRÁFICO DE HÁBITOS
+    let nomesHabitos = [];
+    let quantidadeChecks = [];
+    let coresHabitos = [];
+
+    for (let i = 0; i < listaHabitos.length; i++) {
+
+        nomesHabitos.push(listaHabitos[i].nome);
+        quantidadeChecks.push(Number(listaHabitos[i].checks));
+
+        if (Number(listaHabitos[i].checks) < limiteAtencao) {
+            coresHabitos.push(COR_ATENCAO);
+        } else {
+            coresHabitos.push(COR_PRINCIPAL);
+        }
+    }
+
+    graficoHabitos.data.labels = nomesHabitos;
+    graficoHabitos.data.datasets[0].data = quantidadeChecks;
+    graficoHabitos.data.datasets[0].backgroundColor = coresHabitos;
+
+    graficoHabitos.update();
+}
+
+
+// INICIA E ATUALIZA AUTOMATICAMENTE
+if (idUsuario) {
+
+    carregarDashboard();
+
+    document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) {
+            carregarDashboard();
+        }
+    });
+
+    window.addEventListener("pageshow", function (e) {
+        if (e.persisted) {
+            carregarDashboard();
+        }
+    });
+
+    setInterval(carregarDashboard, 15000);
+}
+
+    </script>

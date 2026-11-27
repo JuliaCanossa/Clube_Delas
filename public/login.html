@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/cadastro.css">
+    <title>Clube Delas | Login</title>
+</head>
+
+<body>
+<style>
+
+    html {
+    scroll-behavior: smooth;
+    }
+    
+</style>
+
+    <section class="lado-azul">
+        <span class="logo">Clube Delas</span>
+        <h1>Um espaço para <span>ser você</span></h1>
+        <p>
+            Pequenos hábitos, novas experiências e uma comunidade
+            de meninas que querem crescer juntas
+        </p>
+    </section>
+
+    <section class="lado-claro">
+
+        <div class="formulario">
+            <h2>Bem-vinda de volta!</h2>
+            <p class="subtitulo">Entre na sua conta para continuar</p>
+
+            <input type="email" id="ipt_login_email" placeholder="E-mail">
+            <input type="password" id="ipt_login_senha" placeholder="Senha">
+
+            <button onclick="entrar()">ENTRAR</button>
+            <button type="button" onclick="window.location.href='index.html'" class="btn-voltar">← Voltar</button>
+            <div id="div_exibir_login"></div>
+
+            <p>
+                Ainda não tem conta?
+                <a href="cadastro.html">Cadastre-se</a>
+            </p>
+        </div>
+
+    </section>
+
+    <script src="js/login.js"></script>
+
+</body>
+</html>
+<script>
+function entrar() {
+
+    let emailVar = ipt_login_email.value;
+    let senhaVar = ipt_login_senha.value;
+
+    if (emailVar == "" || senhaVar == "") {
+        div_exibir_login.innerHTML = "Preencha todos os campos";
+
+    } else {
+
+        // 2) Envia e-mail e senha para o servidor (rota de autenticação)
+        fetch("/usuarios/autenticar", {
+            method: "POST",                                  // POST = enviando dados
+            headers: {
+                "Content-Type": "application/json"           // avisa que os dados estão em JSON
+            },
+            body: JSON.stringify({
+                emailServer: emailVar,                       // nomes que o servidor espera receber
+                senhaServer: senhaVar
+            })
+        }).then(function (resposta) {
+
+    if (resposta.ok) {
+        resposta.json().then(function (json) {
+            localStorage.setItem("idUsuario", json.id);
+            localStorage.setItem("nomeUsuario", json.nome);
+
+            window.location = "dashboard.html";
+        });
+
+    } else {
+        div_exibir.innerHTML = "E-mail e/ou senha inválido(s).";
+    }
+
+}).catch(function (erro) {
+    console.log("#ERRO: ", erro);
+    div_exibir.innerHTML = "Erro de conexão com o servidor.";
+});
+    }
+}
+</script>

@@ -1,0 +1,139 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e0eced;
+    color: #13066b;
+    text-align: center;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    padding-bottom: 0;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 14px 20px;
+    border-bottom: 1px solid #13066b33;
+    background-color: #e0eced;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar h1 {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    font-style: italic;
+    margin: 0;
+}
+
+nav a {
+    color: #13066b;
+    text-decoration: none;
+    margin: 6px 4px;
+    padding: 8px 12px;
+    font-size: 18px;
+    transition: background-color 0.2s;
+}
+
+nav a:hover {
+    background-color: #e8d39d;
+}
+
+nav a.ativa {
+    background-color: #13066b;
+    color: #e0eced;
+}
+
+.navbar-direita {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.usuario {
+    font-size: 16px;
+}
+
+.usuario b {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-size: 20px;
+}
+
+.botao-sair {
+    background-color: #13066b;
+    color: #e0eced;
+    padding: 12px 18px;
+    text-decoration: none;
+    font-size: 12px;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.botao-sair:hover {
+    background-color: #e8d39d;
+    color: #13066b;
+}
+
+.titulo {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(26px, 5vh, 40px);
+    margin: 3vh 0 2vh;
+}
+
+.campo {
+    padding: 12px;
+    border: 1px solid #13066b;
+    background-color: transparent;
+    color: #13066b;
+}
+
+.botao {
+    padding: 12px 18px;
+    border: none;
+    background-color: #13066b;
+    color: #e0eced;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.botao:hover {
+    background-color: #e8c88a;
+    color: #13066b;
+}
+
+.conteudo-checklist {
+    width: fit-content;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.lista {
+    margin-top: 3vh;
+    font-size: 22px;
+    line-height: 2;
+    text-align: left;
+    max-height: 45vh;
+    overflow-y: auto;
+}
+
+.lista label.feito {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+

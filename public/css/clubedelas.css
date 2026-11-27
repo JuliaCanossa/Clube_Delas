@@ -1,0 +1,364 @@
+
+/* CONFIGURAÇÕES GERAIS */
+
+body {
+    margin: 0;
+    background-color: #e0eced;
+    color: #13066b;
+    font-family: Arial, sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 90px;
+}
+
+/* MENU */
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 14px 20px;
+    border-bottom: 1px solid #13066b33;
+    background-color: #e0eced;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar h1 {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    font-style: italic;
+    margin: 0;
+}
+
+nav a {
+    color: #13066b;
+    text-decoration: none;
+    margin: 6px 4px;
+    padding: 8px 12px;
+    font-size: 18px;
+    transition: background-color 0.2s;
+}
+
+nav a:hover {
+    background-color: #e8d39d;
+}
+
+nav a.ativa {
+    background-color: #13066b;
+    color: #e0eced;
+}
+
+/* BOTÕES */
+
+.botao {
+    background-color: #13066b;
+    color: #e0eced;
+    padding: 12px 18px;
+    text-decoration: none;
+    font-size: 12px;
+    text-transform: uppercase;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+/* APRESENTAÇÃO */
+
+.inicio {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 50px;
+    min-height: 550px;
+}
+
+.inicio h2 {
+    font-family: Georgia, serif;
+    font-size: 75px;
+    font-style: italic;
+    line-height: 0.9;
+    margin: 25px 0;
+}
+
+.inicio h2 span {
+    color: #e8d39d;
+}
+
+.inicio p {
+    max-width: 350px;
+    line-height: 1.6;
+    color: #454545;
+}
+
+.inicio img {
+    width: 250px;
+}
+
+/* FAIXA */
+
+.faixa {
+    background-color: #13066b;
+    color: #e0eced;
+    text-align: center;
+    padding: 10px;
+    letter-spacing: 3px;
+    font-size: 12px;
+}
+
+/* SOBRE A JULIA */
+
+.julia {
+    background-color: #e0eced;
+    padding: 60px 240px;
+    max-width: 700px;
+}
+
+.julia h2 {
+    font-size: 48px;
+}
+
+.julia p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #454545;
+}
+
+.julia blockquote {
+    border-left: 5px solid #e8c88a;
+    padding-left: 30px;
+    font-style: italic;
+    font-size: 20px;
+    margin-left: 0;
+}
+
+/* DICAS DO CLUBE */
+
+.dicas {
+    background-color: #13066b;
+    color: #e0eced;
+    padding: 60px 100px;
+}
+
+.dicas h2 {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    display: flex;
+    justify-content: center;
+    font-size: 65px;
+}
+
+.cards {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.card {
+    padding: 30px;
+    width: 100%;
+    box-sizing: border-box;
+    gap: 30px;
+}
+
+.card h3 {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-size: 50px;
+    color: #e8c88a;
+}
+
+.card p {
+    font-size: 22px;
+    line-height: 1.75;
+    color: #e0eced;
+    margin-top: 5px;
+    max-width: 70ch;
+}
+
+.card .dica,
+.card .exemplo {
+    font-size: 20px;
+    line-height: 1.7;
+    margin-bottom: 22px;
+    color: #e0eced;
+}
+
+/* FOTOS E VÍDEOS */
+
+.fotos,
+.videos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.fotos img,
+.videos img,
+.videos video {
+    min-width: 0;
+    object-fit: cover;
+    display: block;
+}
+
+/* QUIZ */
+
+.painel {
+    width: 100%;
+    padding: 70px 20px;
+    box-sizing: border-box;
+}
+
+.container {
+    background-color: #13066b;
+    color: #e0eced;
+    border-radius: 10px;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 45px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.titulo {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-size: 38px;
+    color: #e8d39d;
+    margin: 0 0 15px;
+}
+
+.texto {
+    color: #e0eced;
+    font-size: 17px;
+    line-height: 1.5;
+    margin-bottom: 30px;
+}
+
+#div_exibir {
+    width: 100%;
+    font-size: 17px;
+    text-align: left;
+}
+
+.quiz-pergunta {
+    font-family: "Playfair Display", serif;
+    font-size: 25px;
+    color: #e8d39d;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* OPÇÕES DO QUIZ */
+
+.opcao {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: #e0eced;
+    color: #13066b;
+    padding: 16px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.opcao:hover {
+    background-color: #e8d39d;
+}
+
+.opcao input {
+    accent-color: #13066b;
+    cursor: pointer;
+}
+
+/* BOTÕES DO QUIZ */
+
+#div_exibir button {
+    display: block;
+    margin: 25px auto 0;
+    background-color: #e8d39d;
+    color: #13066b;
+    padding: 14px 35px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+#div_exibir button:hover {
+    background-color: #e8c88a;
+}
+
+/* RESULTADO DO QUIZ */
+
+.resultado {
+    background-color: #e0eced;
+    color: #13066b;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.resultado h3 {
+    font-family: "Playfair Display", serif;
+    font-size: 34px;
+    font-style: italic;
+    color: #13066b;
+}
+
+.resultado p {
+    font-size: 17px;
+    line-height: 1.6;
+}
+
+.resultado .botao {
+    background-color: #13066b;
+    color: #e0eced;
+    padding: 14px 24px;
+    border-radius: 25px;
+}
+
+/* PARTE FINAL */
+
+.chamada {
+    background-color: #e0eced;
+    color: #13066b;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.chamada h2 {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.chamada p {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+/* LINHAS */
+
+.linha {
+    width: 100%;
+    border: none;
+    border-top: 1px solid #e0eced;
+    margin: 0;
+}
+
+.linha2 {
+    width: 100%;
+    border: none;
+    border-top: 1px solid #13066b;
+    margin: 0;
+}
+

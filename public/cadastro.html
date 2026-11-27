@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/cadastro.css">
+    <title>Clube Delas | Cadastro</title>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <section class="lado-azul">
+        <span class="logo">Clube Delas</span>
+        <h1>Um espaço para <span>ser você.</span></h1>
+        <p>
+            Pequenos hábitos, novas experiências e uma comunidade
+            de meninas que querem crescer juntas.
+        </p>
+    </section>
+
+    <section class="lado-claro">
+
+        <div class="formulario">
+            <h2>Faça parte!</h2>
+            <p class="subtitulo">Crie sua conta e venha para o Clube Delas</p>
+
+            <input type="text" id="ipt_cad_nome" placeholder="Nome">
+            <input type="email" id="ipt_cad_email" placeholder="E-mail">
+            <input type="password" id="ipt_cad_senha" placeholder="Senha">
+            <input type="password" id="ipt_cad_confirmar" placeholder="Confirmar senha">
+
+            <button onclick="cadastrar()">CRIAR CONTA</button>
+            <button onclick="regras()">REGRAS PARA O CADASTRO</button>
+
+            <button type="button" onclick="window.location = 'login.html'">Voltar</button>
+
+            <div id="div_exibir"></div>
+
+            <p>
+                Já tem conta?
+                <a href="login.html">Entrar</a>
+            </p>
+        </div>
+
+    </section>
+
+    <script src="js/cadastro.js"></script>
+
+</body>
+
+</html>
