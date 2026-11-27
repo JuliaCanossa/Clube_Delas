@@ -1,15 +1,11 @@
--- clube delas: script com 3 tabelas (usuario, habito, registro_execucao)
--- cria o banco de dados e já seleciona ele pra usar
 create database if not exists clube_delas;
 use clube_delas;
 
 -- tabela 1: usuario
 -- guarda quem usa o app
 create table usuario (
--- id é o número único de cada usuária, o banco gera sozinho (1, 2, 3...)
 id_usuario int auto_increment primary key,
 nome varchar(100) not null,
--- unique = não pode ter dois cadastros com o mesmo email
 email varchar(100) not null unique,
 -- nunca guardar a senha pura, só o hash (senha embaralhada)
 senha_hash varchar(255) not null,
