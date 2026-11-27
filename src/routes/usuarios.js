@@ -2,18 +2,6 @@
 var express = require("express");
 var router = express.Router();
 
-// O que é uma rota?
-// Uma rota é um endereço da sua API associado a uma ação. 
-// Ela responde à pergunta: "quando alguém acessar este endereço 
-// com este método, o que o servidor deve fazer?"
-// Pense em um restaurante: o cardápio é o conjunto de rotas, 
-// e cada prato é uma rota. O cliente (front-end) pede um prato 
-// (faz a requisição) e a cozinha (controller) prepara e entrega.
-
-
-// O require é a forma do Node.js de importar o código de outro arquivo para usar no arquivo atual.
-// Cada arquivo em Node é isolado. Uma função criada em um arquivo não existe nos outros, 
-// a não ser que você exporte de um lado e importe do outro.
 var usuarioController = require("../controllers/usuarioController");
 var habitoController = require("../controllers/habitoController");
 
